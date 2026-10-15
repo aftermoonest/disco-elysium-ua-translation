@@ -88,6 +88,11 @@ def main():
         fl = list(ru_fl)
         if ua_max > ru_max:
             fl[0] = max(12.0, round(fl[0] * ru_max / ua_max * 2) / 2)
+        # Narrow single-line labels: widen to the max width other labels already use (130 @ x=-14),
+        # then size by ~1.35 * width / chars (calibrated on Beherrschung/Elektrochemie), cap 18.
+        if "\n" not in text and fl[0] < 17 and fl[7] < 130:
+            fl[7], fl[5] = 130.0, -14.0
+            fl[0] = max(fl[0], min(18.0, round(1.35 * 130 / ua_max * 2) / 2))
         print(f"{eid:>3} {ent[1]!r:28} -> {text!r:24} size {ru_fl[0]} -> {fl[0]}")
         ent[1], ent[2] = text, fl
 
