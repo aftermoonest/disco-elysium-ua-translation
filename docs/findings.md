@@ -92,3 +92,24 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 ## Splash fix confirmed in game + font size (2026-10-15)
 - Patched `global-metadata.dat` literal works: startup screen shows "ЗАВАНТАЖЕННЯ" (Cyrillic glyphs OK). Installed in game; backup `work/backup/metadata/global-metadata.dat`.
 - User wants it smaller (text takes ~half the screen at size 110). TMP text "LOADING" is MonoBehaviour path_id 49 in `level0` (GameObject "Text" under the loading UI): fontSize @+0x124 and fontSizeBase @+0x128 (floats, 110.0). `tools/patch_splash_fontsize.py <level0> <out> <size>` -> `work/patched/level0` (size 80; only 2 bytes differ). Other scenes (level1/2/3/35, sharedassets*) also contain a "LOADING" string — in-game area loading screens may use their own texts/sizes; unchecked.
+
+## English source texts + glossary pipeline (2026-10-15)
+- English GeneralLockit: `resources.assets` MonoBehaviour path_id 2996 (5476 terms, no typetree in file -> parsed with node layout borrowed from the Russian lockit bundle). `tools/dump_english_lockits.py` -> `work/glossary/en_GeneralLockit.json`.
+- English dialogues: Pixel Crushers DialogueDatabase in `StreamingAssets/aa/StandaloneWindows64/dialoguebundle_assets_all_*.bundle` (MonoBehaviour 'Disco Elysium', 65 MB). Entry fields by `Articy Id` -> lockit term `<field>/<ArticyId>` (Dialogue Text, Alternate1-4, tooltip1-10). `tools/dump_english_dialogues.py` -> `work/glossary/en_DialoguesLockit.json` (72 893 strings; 72 771 of the 73 948 UA dialogue terms match).
+- `tools/build_term_table.py` -> `work/glossary/terms.tsv` (791 canonical entities: actors, items, thoughts, area names, skills...) and `conflicts.json` (243 candidates where EN name occurs but UA canonical stem is missing in the UA line). Batches in `work/glossary/batches/b01-b12.json`; Haiku results go to `work/glossary/out/`.
+
+## Glossary applied on copy (2026-10-15)
+- Haiku verdicts merged: `docs/glossary.md`; detailed before/after: `docs/glossary_report.md`. Patched copy `work/patched/lockits/german_glossary` (176 terms changed, verified, NOT installed in game). Skill names/Eugene/Glen/Evrart/Scab etc. deliberately left for user decision.
+
+## Distribution inventory (2026-10-15)
+Game files changed by the mod (old = work/backup original, new = current game), bsdiff patch sizes:
+| file (under disco_Data) | old -> new | diff |
+|---|---|---|
+| resources.assets | 3,444,764 -> 3,445,016 | bsdiff 660 B (skill labels) |
+| level0 | 10,940 -> 10,940 | 2 bytes, bsdiff 154 B (splash font size) |
+| level2 | 5,134,712 -> 5,134,712 | 3 bytes, bsdiff 168 B (INTELLECT label fix, other session) |
+| il2cpp_data/Metadata/global-metadata.dat | 12,380,944 -> 12,380,968 | bsdiff 213 B (WIRD GELADEN literal) |
+| StreamingAssets/AssetBundles/Windows/collage/shared | 68,180 -> 99,129 | bsdiff 88,740 B (translation + LZ4 repack) |
+Plus drop-in bundles (own content, shipped as files): lockits/german, images/german, fonts/english.
+=> An installer can ship tiny binary patches keyed by the SHA-256 of the original file; no game file is redistributed. bsdiff patches need `bz2` + ~40 lines pure-Python bspatch at install time (no UnityPy needed).
+Platform plan: Windows Steam (tested here), Steam Deck/Linux = Proton uses the same Windows files, Mac native (user has a Mac to test; its files/bundles differ -> separate patch set from its originals), GOG / Xbox-app-on-Windows (Game Pass; install dir selectable, not necessarily WindowsApps) = verify hashes, add patch sets per version. Consoles impossible.
