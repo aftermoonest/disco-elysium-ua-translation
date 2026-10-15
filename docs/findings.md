@@ -62,3 +62,11 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Fix: alias U+0406/0456/0407/0457 to Latin I/i/Ï/ï glyphs in the character table (visually identical; no atlas change). `tools/patch_coresans.py` -> `work/patched/fonts/english` (+64 bytes). NOT yet tested in game.
 - Pawnshop close text 'ЗАКРИТИ ▼?' (Russian original also has '▼?') — ▼ not in this font; check in game how it renders.
 - HUD_CHARSHEET_ABBREVIATION "ПЕРСОНАЖ" wraps ("ПЕРСО/НАЖ") in the bottom bar (overflow, Bug 3).
+
+## SECOND CORRECTION: "WIRD GELADEN" is a texture after all (2026-10-15)
+- Installing the patched `collage/shared` (Collage/BUTTON/LOADING = "Завантаження") did NOT change the splash. Player.log: game starts clean, StartupLanguage = German; no errors.
+- Whole-tree search (data files, Managed, exe, StreamingAssets/aa, all bundles via UnityPy) finds "geladen" ONLY in collage/shared. But `images_dyslexic/german` has Texture2D `loading-panel-de` (268x39, path_id 5781628726658703548) and Sprite 3036182261067988640 with the baked white text "WIRD GELADEN" (+ fade block on the right where the spinner sits) — it matches the screenshot. Likewise `saving-panel-de` (262x39, Texture 136298903547947466 negated sign: -136298903547947466) there.
+- Settings.json has dyslexicFont=false, yet the startup splash evidently uses the dyslexic image set (or settings not read yet at that point). The mod never touched `images_dyslexic/` — all ~55 textures there are still German originals (buttons, labels...) and show if the dyslexic option is on.
+- `images/german` (mod): both loading-panel-de and saving-panel-de read "ЗБЕРЕЖЕННЯ" (loading one should be "ЗАВАНТАЖЕННЯ").
+- Collage lockit translation is still valid/needed for Collage mode, independent of this.
+- Player.log lives in `%USERPROFILE%\AppData\LocalLow\ZAUM Studio\Disco Elysium\Player.log` (+ Player-prev.log). Do not Read whole file (huge output) — grep it.
