@@ -12,3 +12,8 @@ translation/
 /Disco Elysium ukr dumb/
 /*.png
 *- Copy/
+# local-only notes (not published)
+/PLAN.md
+/TASKS.md
+/docs/MY_GUIDE.uk.md
+/docs/GUIDE.md
