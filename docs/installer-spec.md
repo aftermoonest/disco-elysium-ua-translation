@@ -14,3 +14,9 @@
 - `translation/general.tsv` (8,585 terms) and `translation/dialogues.tsv` (74,029 terms): exported from the game's current `lockits/german` (user's latest edits live ONLY there; they changed 250+703 terms and added 322+81 vs the old dumps).
 - Full binary snapshot of the modded game files: `work/snapshot/2026-10-15/` (+ manifest.json with SHA-256), not in git.
 - Old dumps `Disco Elysium ukr dumb/*.json` and release folder bundles are OUTDATED (14:05-14:07) — do not build from them.
+
+## Prototype status (2026-10-15)
+- `installer/installer.py` — single-file installer (stdlib only): GUI (tkinter, UA/EN) + `--cli install|remove|info|collect-info`, `--dry-run`, `--yes`, `--game`, `--lang`. Pure-Python bspatch. Steam/GOG/Xbox/Epic/Deck/Mac path detection written, only Windows+Steam exercised.
+- `tools/build_package.py` — builds `dist/DiscoElysium_UA_installer/` + `dist/..._v<ver>.zip` from `work/snapshot/<date>` (originals from `work/backup`), re-verifies every patch with the installer's own bspatch. Package 39 MB, zip (LZMA) 11 MB. `dist/` is git-ignored.
+- `tools/test_installer.py` — 22 end-to-end checks on a throw-away copy (`work/testgame/`): dry-run, install, byte-exact backups, re-install/update, remove restores byte-for-byte, unknown version refused (nothing changed), hand-installed/no-backup case explained, wrong folder, collect-info, no *.ua_tmp left, GUI smoke test. ALL PASSED. The real game folder was never written.
+- Known gaps: only the Windows/Steam variant exists (Mac/GOG/Xbox variants need their originals); GUI not yet looked at by a human; PyInstaller exe + GitHub Actions + README not done; process check for macOS not implemented; installer refuses on a game already hand-modded without backup (user must "Verify files" in Steam first).
