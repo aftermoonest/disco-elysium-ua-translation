@@ -26,5 +26,5 @@
 - `tools/build_package.py [--dist DIR] [--exe path]` now makes two archives: `..._python.zip` (installer.py + READMEs + package; Mac / Linux / Steam Deck / any Python 3) 11 MB, and `..._windows.zip` (PyInstaller .exe 10.6 MB + READMEs + package) 21.4 MB. In a frozen exe the `package/` folder is looked up NEXT to the exe.
 - Windowed exe: stdout is None -> `_attach_console()` reuses redirected handles (pipes) or attaches to the parent console, so `--cli` works from cmd/PowerShell and from scripts.
 - All 22 e2e checks pass for installer.py (dist/) AND for the unzipped windows.zip exe (`UA_DIST=dist_next UA_EXE=... UA_TESTGAME=testgame_exe python tools/test_installer.py`).
-- `.github/workflows/build.yml`: builds exe/binaries for Windows, macOS, Linux (no data inside). NOT run yet (no GitHub repo yet). macOS/Linux binaries untested; the `python` zip is the fallback.
+- GitHub Actions workflow (CI binaries for macOS/Linux) was written and then REMOVED on 2026-10-15 (not needed for now; it is in git history, commit b75b6b3). Mac / Linux / Deck use the `python` zip (`python3 installer.py`). Revisit only if testers find the script inconvenient.
 - Not verified anywhere but Windows+Steam: Mac, Linux/Deck, GOG, Xbox app. Hashes/patch sets for them are still missing.
