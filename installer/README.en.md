@@ -17,7 +17,7 @@ The installer:
 | Windows, Steam | tested |
 | Steam Deck / Linux (Steam, Proton) | expected to work (same files as Windows), feedback welcome |
 | Windows, GOG / Xbox app (Game Pass) / Epic | the installer checks the version and tells you; see "Another game version" |
-| macOS, Steam (Apple Silicon, macOS 26) | files verified in the game; the Mac installer itself is still being tested. Intel Macs and older macOS were not tested |
+| macOS, Steam (Apple Silicon, macOS 26) | tested (installer and game). Intel Macs and older macOS were not tested |
 | Consoles (Xbox, PlayStation, Switch) | not possible |
 
 ## Installing

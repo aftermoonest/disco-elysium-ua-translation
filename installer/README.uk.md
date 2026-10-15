@@ -17,7 +17,7 @@
 | Windows, Steam | перевірено |
 | Steam Deck / Linux (Steam, Proton) | має працювати (ті самі файли, що й у Windows), чекаємо відгуків |
 | Windows, GOG / Xbox-застосунок (Game Pass) / Epic | інсталятор перевірить версію й підкаже; якщо файли відрізняються, див. «Інша версія гри» |
-| macOS, Steam (Apple Silicon, macOS 26) | файли перевірено в грі; сам інсталятор для Mac ще тестується. Intel Mac і старіші macOS не перевірялися |
+| macOS, Steam (Apple Silicon, macOS 26) | перевірено (інсталятор і гра). Intel Mac і старіші macOS не перевірялися |
 | Консолі (Xbox, PlayStation, Switch) | неможливо |
 
 ## Встановлення
