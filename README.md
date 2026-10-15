@@ -26,7 +26,7 @@ Game files and the full translated text are **not** published in this repository
 (binary bsdiff patches for a few game files plus the translation bundles) built by `tools/build_package.py` from a local snapshot.
 
 ## Перевірено / Tested
-Windows + Steam. Steam Deck / Linux (Proton), GOG, Xbox app, macOS: очікується, але ще не перевірено / expected but not tested yet.
+Windows + Steam. Steam Deck / Linux (Proton), GOG, Xbox app, macOS: не перевірено / not tested yet.
 
 Не афілійовано з ZA/UM. Disco Elysium — торгова марка Zaum Studio OU.
 Not affiliated with ZA/UM. Disco Elysium is a trademark of Zaum Studio OU.
