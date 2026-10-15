@@ -14,7 +14,8 @@
 - [x] Patched via tools/patch_skill_labels.py, verified in game 2026-10-15 (backup in work/backup)
 - [ ] Tune small font sizes (Тремтіння, Навіювання, Самовладання, Електрохімія, Координація)
 - [ ] Decide how to ship resources.assets with the mod (Nexus instructions)
-- [ ] Translate German column of CollageModeLockit (248 terms: achievements, actors, buttons, loading...; dump: work/export/collage_lockit.tsv), write back into collage/shared, test
+- [x] Translate German column of CollageModeLockit (231 terms) -> work/collage_ua.json; patched copy work/patched/collage/shared (NOT in game yet)
+- [ ] Test collage/shared in game (fonts with Cyrillic? text fit?)
 - [ ] Fix `loading-panel-de` texture: it says "ЗБЕРЕЖЕННЯ" (Saving) — should be "ЗАВАНТАЖЕННЯ"; same text as saving-panel-de
 
 ## Bug 2 — Squares (missing glyphs)

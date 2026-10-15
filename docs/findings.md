@@ -46,3 +46,10 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Prepared: `tools/patch_int_label.py` → `work/patched/level2` (same size, only that PPtr zeroed). NOT yet tested in game; backup of level2 still to be made before install.
 - Other possibly similar cases (empty term, secondary SinaNova-*, PPtr to #399/#400): level2 25266, 27202; sharedassets2 3272, 3310, 3326, 3350. Not investigated.
 - I2 images lockit maps `LOAD_SCREEN_PANEL_IMG` -> sprite `loading-panel-<lang>`.
+
+## Collage lockit translated (2026-10-15) — NOT installed in game
+- Translations: `tools/collage_translations.py` (data + generator) → `work/collage_ua.json` (231 terms; only terms with a non-empty German value; headers untouched). Glossary used: Ревашоль, Мартінез, Еврарт, Куно, Головомір, «Танці в лахмітті», Фріссель, Сюзеренітет, комунари; formal "ви".
+- Patch: `tools/patch_collage_lockit.py work/original/AssetBundles/collage/shared work/collage_ua.json work/patched/collage/shared` (UnityPy typetree edit, LZ4 repack, 68 KB → 99 KB). Verify: `tools/verify_collage_patch.py <orig> <patched>` — other objects byte-identical, other language columns unchanged, 0 placeholder/tag problems.
+- game's `collage/shared` == `work/original/AssetBundles/collage/shared` (sha256 equal) → it is the untouched original; restore = just re-copy it.
+- Not yet checked in game: (1) whether Collage UI fonts have Cyrillic glyphs (risk: squares!), (2) text fit in tabs/tooltips (abbreviated "Вел./Жирн./Серед./Мал./Тонк.", "Віз. аналіз № {0}"), (3) `<i>` tags in HIDDEN texts render.
+- Review points in the translation: "Fuck the World" → "На хер цей світ" (kept vulgar like the source), "Lily Livered"/"Pale-Aged"/"Off Breeze"/"Ace's High" are guesses (names of photo filters/fragments).
