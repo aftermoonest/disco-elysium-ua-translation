@@ -88,3 +88,7 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Patch tool: `tools/patch_metadata_literal.py <src> <out> "WIRD GELADEN" "ЗАВАНТАЖЕННЯ"` appends the new UTF-8 text (24 B > 12 B old) at end of file and repoints the table entry (len, dataIndex). Only 4 bytes inside the original file change. Output: `work/patched/global-metadata.dat` (not installed). Risk: this is a game file (12 MB), breaks on game updates; font of that TMP text may lack Cyrillic (squares) -> test.
 - Other hard-coded German literals may exist in the same metadata (UI strings in code). TODO: scan literals near "WIRD GELADEN" / list all German-looking literals.
 - Player.log: grep only, never Read (very long).
+
+## Splash fix confirmed in game + font size (2026-10-15)
+- Patched `global-metadata.dat` literal works: startup screen shows "ЗАВАНТАЖЕННЯ" (Cyrillic glyphs OK). Installed in game; backup `work/backup/metadata/global-metadata.dat`.
+- User wants it smaller (text takes ~half the screen at size 110). TMP text "LOADING" is MonoBehaviour path_id 49 in `level0` (GameObject "Text" under the loading UI): fontSize @+0x124 and fontSizeBase @+0x128 (floats, 110.0). `tools/patch_splash_fontsize.py <level0> <out> <size>` -> `work/patched/level0` (size 80; only 2 bytes differ). Other scenes (level1/2/3/35, sharedassets*) also contain a "LOADING" string — in-game area loading screens may use their own texts/sizes; unchecked.
