@@ -1,4 +1,4 @@
-# Tasks
+﻿# Tasks
 
 ## Setup
 - [ ] Tell Claude: game install path, UABEA path, Unity version, whether Python is installed
@@ -7,7 +7,7 @@
 - [ ] Set up Python + UnityPy for scripted bundle inspection (read-only first)
 
 ## Bug 1 — German skill names + loading screen
-- [ ] Search bundles/resources.assets for "WIRD GELADEN", "LOGIK", "ENZYKLOPÄDIE"
+- [x] Searched: WIRD GELADEN is a texture, not text
 - [ ] Identify where the skill names/descriptions on the character sheet come from
 - [ ] Translate and re-import; verify in game
 
@@ -30,3 +30,4 @@
 - [ ] Translation quality pass + glossary
 - [ ] Collage mode labels (`collage/` bundle) check
 - [ ] Release build script + Nexus changelog
+
