@@ -113,3 +113,8 @@ Game files changed by the mod (old = work/backup original, new = current game), 
 Plus drop-in bundles (own content, shipped as files): lockits/german, images/german, fonts/english.
 => An installer can ship tiny binary patches keyed by the SHA-256 of the original file; no game file is redistributed. bsdiff patches need `bz2` + ~40 lines pure-Python bspatch at install time (no UnityPy needed).
 Platform plan: Windows Steam (tested here), Steam Deck/Linux = Proton uses the same Windows files, Mac native (user has a Mac to test; its files/bundles differ -> separate patch set from its originals), GOG / Xbox-app-on-Windows (Game Pass; install dir selectable, not necessarily WindowsApps) = verify hashes, add patch sets per version. Consoles impossible.
+
+## macOS build (2026-10-15) — in progress
+- User's Mac install (Steam): `~/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles` (confirmed). Game dir has no `disco_Data`, so the installer's `data_dirs: ["disco_Data"]` never matches -> "Game not found". Tk (tkinter) aborts on macOS 26 with system/old Python ("macOS 26 (2603) or later required, have instead 16 (1603)"); `--cli` works.
+- The Windows package cannot be reused as is: it bsdiff-patches `resources.assets`, `level0`, `level2`, `il2cpp_data/Metadata/global-metadata.dat`, `collage/shared` (platform-specific bytes, SHA-256 verified) and ships bundles under `AssetBundles/Windows/`.
+- Next: user runs `python3 -I tools/mac_probe.py > mac_report.txt` on the Mac (read-only) to get the layout, scripting backend (IL2CPP vs Mono), hashes and Unity target platform of every file we touch. Then build a `macos-steam-final-cut` variant from Mac originals.
