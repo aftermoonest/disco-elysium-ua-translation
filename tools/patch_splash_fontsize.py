@@ -12,11 +12,20 @@ import UnityPy
 
 src, dst, size = Path(sys.argv[1]), Path(sys.argv[2]), float(sys.argv[3])
 env = UnityPy.load(str(src))
-obj = next(o for o in env.objects if o.path_id == 49 and o.type.name == "MonoBehaviour")
-raw = obj.get_raw_data()
-assert b"LOADING" in raw[:0x70], "not the LOADING text object"
-fs, fb = struct.unpack_from("<ff", raw, 0x124)
-assert (fs, fb) in ((110.0, 110.0),) or fs == fb, (fs, fb)
+# Found by content (path_id 49 on Windows; ids differ in the macOS build): the TMP text "LOADING" with fontSize == fontSizeBase == 110
+cands = []
+for o in env.objects:
+    if o.type.name != "MonoBehaviour":
+        continue
+    r = o.get_raw_data()
+    if b"LOADING" in r[:0x70] and len(r) >= 0x130:
+        cands.append((o, r, struct.unpack_from("<ff", r, 0x124)))
+for o, r, fl in cands:
+    print("candidate path_id", o.path_id, "size", len(r), "fontSize/base", fl)
+cands = [c for c in cands if c[2] == (110.0, 110.0)]
+assert len(cands) == 1, f"expected exactly one LOADING text with size 110, found {len(cands)}"
+obj, raw, (fs, fb) = cands[0]
+print("using path_id", obj.path_id)
 print("old fontSize/base:", fs, fb)
 new = bytearray(raw)
 struct.pack_into("<ff", new, 0x124, size, size)

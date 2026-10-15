@@ -35,9 +35,15 @@ def sha(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
+FAILED = []
+
+
 def run(script, *args):
+    """Run one tool; a failure is recorded (not fatal) so the other steps still run and show their results."""
     print("  $", Path(script).name, *[Path(str(a)).name for a in args])
-    subprocess.run([sys.executable, "-I", str(script), *map(str, args)], check=True)
+    if subprocess.run([sys.executable, "-I", str(script), *map(str, args)]).returncode:
+        FAILED.append(Path(script).name)
+        print("  !! FAILED:", Path(script).name)
 
 
 def data_dir(game):
@@ -96,6 +102,9 @@ def main():
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(pkg / "data" / (B_WIN + b), dst)
 
+    if FAILED:
+        print("\nFAILED steps:", ", ".join(FAILED), "\nNothing was installed. Send the output above to the author.")
+        return 1
     report = {}
     for rel in GAME_FILES + [B_MAC + b for b in BUNDLES]:
         report[rel] = {"orig": sha(data / rel), "new": sha(files / rel), "size": (files / rel).stat().st_size}
