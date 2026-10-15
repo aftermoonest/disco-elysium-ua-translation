@@ -32,3 +32,10 @@ Font sizes are a crude heuristic (Russian layout, shrunk by length ratio, min 12
 Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB game file) — breaks on game updates; Nexus install instructions need updating.
 
 - 2026-10-15: patched resources.assets confirmed working in game (all 24 names Ukrainian). Small sizes remain on a few labels; user says it works.
+
+## CORRECTION: "WIRD GELADEN" (2026-10-15)
+- Earlier claim "it is a texture" was WRONG. It is the German column of `Collage/BUTTON/LOADING` ("Wird geladen") in MonoBehaviour `CollageModeLockit` inside `collage/shared` (game's AssetBundles/Windows/collage/shared). Languages list order: en, zh-CN, zh-TW, es, pt-BR, fr, de(idx 6), ko, ru, pl, ja, tr, ar. 248 terms, all other German values are still German too (whole Collage mode untranslated).
+- My first lockit grep missed it because `lockits/german` is already the Ukrainian mod, and the term lives in a different bundle.
+- Separate bug: textures `loading-panel-de` and `saving-panel-de` (346x39, images/german) BOTH read "ЗБЕРЕЖЕННЯ"; loading one should be "ЗАВАНТАЖЕННЯ". Russian/English counterparts are white-on-transparent.
+- `resources.assets` MonoBehaviours 2996 (term Buttons/LOAD_SCREEN_PANEL_SAVING_TEXT) and 2998 (LOAD_SCREEN_PANEL_IMG -> sprite "loading-panel") are the built-in default lockit/images source.
+- Exports: `work/export/loading/*.png` (+ `_preview.png` on dark bg), `work/export/collage_lockit.tsv`. Tools: export_texture.py, find_terms.py, probe_loading.py, dump_collage_lockit.py.

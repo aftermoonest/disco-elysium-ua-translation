@@ -9,12 +9,13 @@
 - [x] Python + UnityPy for scripted bundle inspection
 
 ## Bug 1 — German skill names + loading screen
-- [x] Searched: WIRD GELADEN is a texture, not text
+- [x] "WIRD GELADEN" is TEXT (not a texture): term `Collage/BUTTON/LOADING`, German column of `CollageModeLockit` in `collage/shared` bundle (68 KB). The mod never touched this bundle.
 - [x] Skill names found: resources.assets CharsheetSkillLabelsGerman (id 3005)
 - [x] Patched via tools/patch_skill_labels.py, verified in game 2026-10-15 (backup in work/backup)
 - [ ] Tune small font sizes (Тремтіння, Навіювання, Самовладання, Електрохімія, Координація)
 - [ ] Decide how to ship resources.assets with the mod (Nexus instructions)
-- [ ] Loading screen: repaint texture loading-panel-de in images/german
+- [ ] Translate German column of CollageModeLockit (248 terms: achievements, actors, buttons, loading...; dump: work/export/collage_lockit.tsv), write back into collage/shared, test
+- [ ] Fix `loading-panel-de` texture: it says "ЗБЕРЕЖЕННЯ" (Saving) — should be "ЗАВАНТАЖЕННЯ"; same text as saving-panel-de
 
 ## Bug 2 — Squares (missing glyphs)
 - [ ] List all font assets in `fonts/english` and which are used where
