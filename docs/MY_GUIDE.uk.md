@@ -19,8 +19,8 @@
 
 ## 2. Що брати, щоб віддати гравцям
 У теці `dist_next\`:
-- `DiscoElysium_UA_installer_v1.0_windows.zip` (21 МБ): **Windows**. Усередині `.exe`, README, тека `package`.
-- `DiscoElysium_UA_installer_v1.0_python.zip` (11 МБ): **Mac / Linux / Steam Deck**. Усередині `installer.py`, README, `package`.
+- `DiscoElysium_UA_installer_v1.0_windows.zip` (24,5 МБ): **Windows**. Усередині `.exe`, README, тека `package`.
+- `DiscoElysium_UA_installer_v1.0_python.zip` (14,2 МБ): **Mac / Linux / Steam Deck**. Усередині `installer.py`, README, `package`.
 
 Це дві «версії для завантаження» на Nexus. Тека `package` має завжди лежати поруч з `.exe` або `installer.py`.
 

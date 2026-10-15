@@ -29,3 +29,4 @@
 - GitHub Actions workflow (CI binaries for macOS/Linux) was written and then REMOVED on 2026-10-15 (not needed for now; it is in git history, commit b75b6b3). Mac / Linux / Deck use the `python` zip (`python3 installer.py`). Revisit only if testers find the script inconvenient.
 - Not verified anywhere but Windows+Steam: Mac, Linux/Deck, GOG, Xbox app. Hashes/patch sets for them are still missing.
 - Version naming: current release is **1.0** (manifest mod_version "1.0", archives ..._v1.0_*.zip). Tests: installer.py and the unzipped .exe both ALL PASSED.
+- Archives use plain Deflate (NOT LZMA): Windows Explorer cannot extract LZMA zips (error 0x80004005). Sizes now: python zip 14.2 MB, windows zip 24.5 MB. Verified with .NET ZipFile/Expand-Archive.

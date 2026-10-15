@@ -102,7 +102,7 @@ def main():
     (out / "package" / "manifest.json").write_text(json.dumps(manifest, indent=1, ensure_ascii=False), encoding="utf-8")
 
     def make_zip(path, extra, skip_names=()):
-        with zipfile.ZipFile(path, "w", zipfile.ZIP_LZMA) as z:
+        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
             for p in sorted(out.rglob("*")):
                 if p.is_file() and p.name not in skip_names:
                     z.write(p, Path("DiscoElysium_UA_installer") / p.relative_to(out))
