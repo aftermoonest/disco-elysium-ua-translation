@@ -6,6 +6,7 @@ the release folder, then runs the installer in text mode against it.
 """
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -13,10 +14,12 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parent.parent
-PKG = ROOT / "dist" / "DiscoElysium_UA_installer"
+DIST = ROOT / os.environ.get("UA_DIST", "dist")  # UA_DIST=dist_next to test another build
+PKG = DIST / "DiscoElysium_UA_installer"
+EXE = os.environ.get("UA_EXE")  # test a built .exe instead of installer.py
 MAN = json.loads((PKG / "package" / "manifest.json").read_text(encoding="utf-8"))
 FILES = MAN["variants"][0]["files"]
-GAME = ROOT / "work" / "testgame" / "Disco Elysium"
+GAME = ROOT / "work" / os.environ.get("UA_TESTGAME", "testgame") / "Disco Elysium"
 DATA = GAME / "disco_Data"
 BACKUP = ROOT / "work" / "backup"
 REL = ROOT / "Disco Elysium  Ukrainian translation"
@@ -25,6 +28,7 @@ PREVIOUS_MOD = {B + "lockits/german": REL / "lockits/german", B + "images/german
 ORIG_SRC = {"resources.assets": BACKUP / "resources.assets", "level0": BACKUP / "level/level0", "level2": BACKUP / "level2",
             "il2cpp_data/Metadata/global-metadata.dat": BACKUP / "metadata/global-metadata.dat", B + "collage/shared": BACKUP / "collage/shared"}
 
+CMD = [EXE] if EXE else [sys.executable, "-I", str(PKG / "installer.py")]
 fails = []
 
 
@@ -49,7 +53,7 @@ def make_game():
 
 
 def run(*args, expect_ok=True):
-    p = subprocess.run([sys.executable, "-I", str(PKG / "installer.py"), "--lang", "en", "--game", str(GAME), "--skip-running-check", *args],
+    p = subprocess.run([*CMD, "--lang", "en", "--game", str(GAME), "--skip-running-check", *args],
                        capture_output=True, text=True, encoding="utf-8")
     return p.returncode, p.stdout + p.stderr
 
@@ -113,7 +117,7 @@ make_game()
 
 # wrong folder
 rc, out = run("--cli", "info")
-rc2 = subprocess.run([sys.executable, "-I", str(PKG / "installer.py"), "--lang", "uk", "--game", str(ROOT), "--cli", "info"],
+rc2 = subprocess.run([*CMD, "--lang", "uk", "--game", str(ROOT), "--cli", "info"],
                      capture_output=True, text=True, encoding="utf-8")
 check("wrong folder reported (uk)", rc2.returncode == 2 and "не знайдено" in rc2.stdout, rc2.stdout)
 
@@ -129,8 +133,9 @@ check("no temp files left", not leftovers, str(leftovers))
 code = ("import sys; sys.path.insert(0, r'%s'); import tkinter as tk, installer\n"
         "tk.Tk.mainloop = lambda self: (self.update(), self.destroy())\n"
         "import argparse; a = argparse.Namespace(game=r'%s'); print('GUI rc', installer.run_gui(a, 'uk'))" % (PKG, GAME))
-p = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, encoding="utf-8")
-check("GUI builds and closes (tkinter)", "GUI rc 0" in p.stdout, p.stdout + p.stderr)
+if not EXE:
+    p = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, encoding="utf-8")
+    check("GUI builds and closes (tkinter)", "GUI rc 0" in p.stdout, p.stdout + p.stderr)
 
 print("\nRESULT:", "ALL PASSED" if not fails else f"{len(fails)} FAILED: {fails}")
 sys.exit(1 if fails else 0)

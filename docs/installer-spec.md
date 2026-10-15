@@ -20,3 +20,11 @@
 - `tools/build_package.py` — builds `dist/DiscoElysium_UA_installer/` + `dist/..._v<ver>.zip` from `work/snapshot/<date>` (originals from `work/backup`), re-verifies every patch with the installer's own bspatch. Package 39 MB, zip (LZMA) 11 MB. `dist/` is git-ignored.
 - `tools/test_installer.py` — 22 end-to-end checks on a throw-away copy (`work/testgame/`): dry-run, install, byte-exact backups, re-install/update, remove restores byte-for-byte, unknown version refused (nothing changed), hand-installed/no-backup case explained, wrong folder, collect-info, no *.ua_tmp left, GUI smoke test. ALL PASSED. The real game folder was never written.
 - Known gaps: only the Windows/Steam variant exists (Mac/GOG/Xbox variants need their originals); GUI not yet looked at by a human; PyInstaller exe + GitHub Actions + README not done; process check for macOS not implemented; installer refuses on a game already hand-modded without backup (user must "Verify files" in Steam first).
+
+## Packaging status (2026-10-15, later)
+- `installer/README.uk.md` + `README.en.md` written (included in packages).
+- `tools/build_package.py [--dist DIR] [--exe path]` now makes two archives: `..._python.zip` (installer.py + READMEs + package; Mac / Linux / Steam Deck / any Python 3) 11 MB, and `..._windows.zip` (PyInstaller .exe 10.6 MB + READMEs + package) 21.4 MB. In a frozen exe the `package/` folder is looked up NEXT to the exe.
+- Windowed exe: stdout is None -> `_attach_console()` reuses redirected handles (pipes) or attaches to the parent console, so `--cli` works from cmd/PowerShell and from scripts.
+- All 22 e2e checks pass for installer.py (dist/) AND for the unzipped windows.zip exe (`UA_DIST=dist_next UA_EXE=... UA_TESTGAME=testgame_exe python tools/test_installer.py`).
+- `.github/workflows/build.yml`: builds exe/binaries for Windows, macOS, Linux (no data inside). NOT run yet (no GitHub repo yet). macOS/Linux binaries untested; the `python` zip is the fallback.
+- Not verified anywhere but Windows+Steam: Mac, Linux/Deck, GOG, Xbox app. Hashes/patch sets for them are still missing.

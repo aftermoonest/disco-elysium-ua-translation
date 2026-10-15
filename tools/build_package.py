@@ -1,13 +1,14 @@
 """Build the installer package (patches + data files) from the snapshot of the modded game.
 
-Usage: python -I tools/build_package.py [snapshot dir] [--version X.Y.Z]
+Usage: python -I tools/build_package.py [snapshot dir] [--version X.Y.Z] [--dist DIR] [--exe path\to\installer.exe]
 
-Output (git-ignored):
-  dist/DiscoElysium_UA_installer/installer.py
-  dist/DiscoElysium_UA_installer/package/manifest.json
-  dist/DiscoElysium_UA_installer/package/patches/*.bsdiff   (game files: original -> modded)
-  dist/DiscoElysium_UA_installer/package/data/...           (our own bundles, copied as they are)
-  dist/DiscoElysium_UA_installer_v<version>.zip
+Output (git-ignored), DIR defaults to dist:
+  DIR/DiscoElysium_UA_installer/installer.py, README.uk.md, README.en.md
+  DIR/DiscoElysium_UA_installer/package/manifest.json
+  DIR/DiscoElysium_UA_installer/package/patches/*.bsdiff   (game files: original -> modded)
+  DIR/DiscoElysium_UA_installer/package/data/...           (our own bundles, copied as they are)
+  DIR/DiscoElysium_UA_installer_v<version>_python.zip      (Mac / Linux / Steam Deck / any OS with Python 3)
+  DIR/DiscoElysium_UA_installer_v<version>_windows.zip     (only with --exe: the .exe + package + READMEs)
 
 "Original" versions of the patched game files come from work/backup/ (taken from an untouched game).
 Every patch is re-applied here with the installer's own pure-Python bspatch and verified by SHA-256.
@@ -51,23 +52,30 @@ def load_installer():
     return mod
 
 
+def opt(name, default=None):
+    if name in sys.argv:
+        return sys.argv[sys.argv.index(name) + 1]
+    return default
+
+
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    version = "0.1.0"
-    if "--version" in sys.argv:
-        version = sys.argv[sys.argv.index("--version") + 1]
-        args = [a for a in args if a != version]
+    version = opt("--version", "0.1.0")
+    dist = ROOT / opt("--dist", "dist")
+    exe = opt("--exe")
+    skip = {version, opt("--dist"), exe, "--version", "--dist", "--exe"}
+    args = [a for a in sys.argv[1:] if a not in skip]
     snaps = sorted((ROOT / "work" / "snapshot").iterdir())
     snap = Path(args[0]) if args else snaps[-1]
     print("snapshot:", snap, "| version:", version)
     inst = load_installer()
 
-    out = ROOT / "dist" / "DiscoElysium_UA_installer"
+    out = dist / "DiscoElysium_UA_installer"
     if out.exists():
         shutil.rmtree(out)
     (out / "package" / "patches").mkdir(parents=True)
     (out / "package" / "data").mkdir(parents=True)
-    shutil.copy2(ROOT / "installer" / "installer.py", out / "installer.py")
+    for name in ("installer.py", "README.uk.md", "README.en.md"):
+        shutil.copy2(ROOT / "installer" / name, out / name)
 
     files = []
     for rel, kind, orig_path in FILES:
@@ -93,13 +101,20 @@ def main():
                 "variants": [{"id": "windows-steam-final-cut", "data_dirs": ["disco_Data"], "files": files}]}
     (out / "package" / "manifest.json").write_text(json.dumps(manifest, indent=1, ensure_ascii=False), encoding="utf-8")
 
-    zpath = ROOT / "dist" / f"DiscoElysium_UA_installer_v{version}.zip"
-    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_LZMA) as z:
-        for p in sorted(out.rglob("*")):
-            if p.is_file():
-                z.write(p, Path("DiscoElysium_UA_installer") / p.relative_to(out))
+    def make_zip(path, extra, skip_names=()):
+        with zipfile.ZipFile(path, "w", zipfile.ZIP_LZMA) as z:
+            for p in sorted(out.rglob("*")):
+                if p.is_file() and p.name not in skip_names:
+                    z.write(p, Path("DiscoElysium_UA_installer") / p.relative_to(out))
+            for src, arc in extra:
+                z.write(src, Path("DiscoElysium_UA_installer") / arc)
+        print(f"{path.name}: {path.stat().st_size / 1e6:.1f} MB")
+
     total = sum(p.stat().st_size for p in out.rglob("*") if p.is_file())
-    print(f"package dir {total / 1e6:.1f} MB -> {zpath.name} {zpath.stat().st_size / 1e6:.1f} MB")
+    print(f"package dir {total / 1e6:.1f} MB")
+    make_zip(dist / f"DiscoElysium_UA_installer_v{version}_python.zip", [])
+    if exe:
+        make_zip(dist / f"DiscoElysium_UA_installer_v{version}_windows.zip", [(Path(exe), "DiscoElysium_UA_installer.exe")], skip_names=("installer.py",))
 
 
 if __name__ == "__main__":

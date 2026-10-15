@@ -42,7 +42,8 @@
 - [ ] Translation quality pass + glossary
 - [ ] Collage mode labels (`collage/` bundle) check
 - [x] Installer prototype (installer/installer.py + tools/build_package.py + tools/test_installer.py), 22 tests pass on a test copy
-- [ ] Installer: human GUI check, README (UA/EN), PyInstaller exe, GitHub Actions (win/mac/linux), Mac test, GOG/Xbox hashes
+- [x] Installer: GUI checked by user on Windows+Steam (works); README UK/EN; PyInstaller exe (tested via 22 checks); GitHub Actions workflow written (not run)
+- [ ] Installer: Mac test (user has a Mac), Mac patch set, GOG/Xbox hashes, signing/SmartScreen note, publish repo + Releases
 - [ ] Release build script + Nexus changelog
 
 

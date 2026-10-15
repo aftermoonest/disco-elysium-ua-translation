@@ -192,8 +192,34 @@ def atomic_write(path, data):
 
 # --------------------------------------------------------------------------- package / detection
 def package_dir():
-    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
-    return base / "package"
+    """The 'package' folder (manifest, patches, data): next to the script, or next to the .exe when frozen."""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent / "package"
+    return Path(__file__).resolve().parent / "package"
+
+
+def _attach_console():
+    """A windowed Windows .exe has no usable stdout: reuse redirected handles (pipes) or the parent console."""
+    if sys.stdout is not None and sys.stderr is not None:
+        return
+    if platform.system() != "Windows":
+        return
+    try:
+        import ctypes
+        import msvcrt
+        k32 = ctypes.windll.kernel32
+        k32.GetStdHandle.restype = ctypes.c_void_p
+        invalid = (None, 0, ctypes.c_void_p(-1).value)
+        h_out, h_in = k32.GetStdHandle(-11), k32.GetStdHandle(-10)
+        if h_out not in invalid:  # started with redirected output (pipe / file)
+            sys.stdout = sys.stderr = os.fdopen(msvcrt.open_osfhandle(h_out, os.O_WRONLY), "w", encoding="utf-8", errors="replace", buffering=1)
+            if h_in not in invalid:
+                sys.stdin = os.fdopen(msvcrt.open_osfhandle(h_in, os.O_RDONLY), "r", encoding="utf-8", errors="replace")
+        elif k32.AttachConsole(-1):  # started from a console window
+            sys.stdout = sys.stderr = open("CONOUT$", "w", encoding="utf-8", errors="replace", buffering=1)
+            sys.stdin = open("CONIN$", "r", encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 
 def load_manifest(pkg=None):
@@ -680,6 +706,7 @@ def main(argv=None):
     ap.add_argument("--dry-run", action="store_true", help="show what would be done, change nothing")
     ap.add_argument("--yes", "-y", action="store_true", help="do not ask for confirmation")
     ap.add_argument("--skip-running-check", action="store_true", help=argparse.SUPPRESS)
+    _attach_console()
     args = ap.parse_args(argv)
     for stream in (sys.stdout, sys.stderr):  # Cyrillic must survive cp1252 consoles and pipes
         try:
