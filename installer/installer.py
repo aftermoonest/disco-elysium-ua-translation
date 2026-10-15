@@ -71,7 +71,7 @@ T = {
         "cancelled": "Скасовано.",
         "error": "Помилка: {0}",
         "wait": "Зачекайте…",
-        "no_window": "Графічне вікно на цьому Mac недоступне: Tk у цьому Python аварійно завершується на macOS 26. "
+        "no_window": "Графічне вікно на цьому Mac недоступне: Tk у системному Python від Apple аварійно завершується на macOS 26. "
                      "Працюємо в текстовому режимі, далі буде запит на встановлення. "
                      "Щоб видалити переклад: python3 installer.py --cli remove",
     },
@@ -113,7 +113,7 @@ T = {
         "cancelled": "Cancelled.",
         "error": "Error: {0}",
         "wait": "Please wait…",
-        "no_window": "The window is not available on this Mac: Tk in this Python aborts on macOS 26. "
+        "no_window": "The window is not available on this Mac: Tk in Apple's system Python aborts on macOS 26. "
                      "Using text mode; you will be asked to confirm the installation. "
                      "To remove the translation: python3 installer.py --cli remove",
     },
@@ -707,15 +707,19 @@ def run_gui(args, lang):
 
 
 def tk_would_abort():
-    """True on macOS 26 under a Python built with an old SDK. There macOS reports its version as 16 and Tk calls abort()
-    ("macOS 26 (2603) or later required, have instead 16 (1603)"), which kills the process and cannot be caught.
-    A real macOS 16 does not exist, so major == 16 identifies that case. DISCO_UA_FORCE_GUI=1 skips the guard."""
+    """True where Tk is known to abort the whole process (uncatchable): Apple's own Python (Xcode / Command Line Tools,
+    Python 3.9 + Apple's Tk 8.5) on macOS 26 prints "macOS 26 (2603) or later required, have instead 16 (1603)" and aborts,
+    because that Python runs in a compatibility mode that reports the system as version 16.
+    Decided from paths and the OS version only, WITHOUT importing tkinter. DISCO_UA_FORCE_GUI=1 skips the guard."""
     if platform.system() != "Darwin" or os.environ.get("DISCO_UA_FORCE_GUI"):
         return False
     try:
-        return int(platform.mac_ver()[0].split(".")[0]) == 16
+        major = int(platform.mac_ver()[0].split(".")[0])
     except (ValueError, IndexError):
         return False
+    where = os.path.realpath(sys.base_prefix) + " " + os.path.realpath(sys.executable)
+    apple_python = any(m in where for m in ("/Xcode.app/", "/CommandLineTools/", "/System/Library/"))
+    return major == 16 or (major >= 26 and apple_python)
 
 
 def main(argv=None):

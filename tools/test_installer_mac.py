@@ -144,12 +144,22 @@ try:
     spec = importlib.util.spec_from_file_location("inst", pkg / "installer.py")
     inst = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(inst)
-    cases = [("Darwin", "16.0", True), ("Darwin", "26.0.1", False), ("Darwin", "15.5", False), ("Windows", "", False), ("Linux", "", False)]
-    for system, ver, expect in cases:
+    xcode = "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9"
+    org = "/Library/Frameworks/Python.framework/Versions/3.13"
+    cases = [("Darwin", "26.3", xcode, True),   # the user's Mac: Apple's Python on macOS 26
+             ("Darwin", "26.3", "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9", True),
+             ("Darwin", "16.0", org, True),     # compat-mode version report
+             ("Darwin", "26.3", org, False),    # python.org Python on macOS 26: not guarded
+             ("Darwin", "15.5", xcode, False), ("Windows", "", "C:/Python312", False), ("Linux", "", "/usr", False)]
+    real_prefix, real_exe, real_realpath = inst.sys.base_prefix, inst.sys.executable, inst.os.path.realpath
+    inst.os.path.realpath = lambda p: p
+    for system, ver, prefix, expect in cases:
         inst.platform.system = lambda s=system: s
         inst.platform.mac_ver = lambda v=ver: (v, ("", "", ""), "arm64")
+        inst.sys.base_prefix = prefix
         os.environ.pop("DISCO_UA_FORCE_GUI", None)
-        check(f"tk guard {system} {ver or '-'} -> {expect}", inst.tk_would_abort() is expect)
+        check(f"tk guard {system} {ver or '-'} {Path(prefix).parts[-1] if prefix else '-'} -> {expect}", inst.tk_would_abort() is expect)
+    inst.sys.base_prefix, inst.os.path.realpath = real_prefix, real_realpath
     inst.platform.system = lambda: "Darwin"
     inst.platform.mac_ver = lambda: ("16.0", ("", "", ""), "arm64")
     os.environ["DISCO_UA_FORCE_GUI"] = "1"
