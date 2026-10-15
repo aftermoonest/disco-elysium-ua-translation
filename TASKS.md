@@ -17,6 +17,7 @@
 - [x] Translate German column of CollageModeLockit (231 terms) -> work/collage_ua.json; patched copy work/patched/collage/shared (NOT in game yet)
 - [ ] Test collage/shared in game (installed 2026-10-15; it did NOT fix the splash text; Collage UI itself still untested)
 - [ ] REAL source of "WIRD GELADEN": Texture2D `loading-panel-de` (268x39, path_id 5781628726658703548) in `images_dyslexic/german` (original German, mod never touched images_dyslexic). Repaint to "ЗАВАНТАЖЕННЯ"; also saving-panel-de there
+- [x] Generated repainted panels -> work/patched/images_dyslexic/german (not in game yet)
 - [ ] Fix `loading-panel-de` texture: it says "ЗБЕРЕЖЕННЯ" (Saving) — should be "ЗАВАНТАЖЕННЯ"; same text as saving-panel-de
 
 ## Bug 2 — Squares (missing glyphs)

@@ -70,3 +70,14 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - `images/german` (mod): both loading-panel-de and saving-panel-de read "ЗБЕРЕЖЕННЯ" (loading one should be "ЗАВАНТАЖЕННЯ").
 - Collage lockit translation is still valid/needed for Collage mode, independent of this.
 - Player.log lives in `%USERPROFILE%\AppData\LocalLow\ZAUM Studio\Disco Elysium\Player.log` (+ Player-prev.log). Do not Read whole file (huge output) — grep it.
+
+## Short technical labels (2026-10-15)
+- `tools/patch_short_labels.py` -> `work/patched/lockits/german` (copy; NOT in game, release folder untouched). GeneralLockit changes: ABILITY_SHORT_INT 'Введення'->'Інт' (mistranslation of "Input"), HUD_JOURNAL 'ЖУР', HUD_CHARSHEET 'ПЕР', HUD_CABINET 'ШМ'->'ДУМ', ABILITY_BUTTON_RANDOM 'ВИПАДКОВО'. HUD_INVENTORY stays 'ІНВ'.
+- Also not yet shortened (candidates): ЗАВАНТАЖИТИ, НАЛАШТУВАННЯ, ПІДВИЩЕННЯ РІВНЯ, СКАСУВАТИ. The JSON dumps in "Disco Elysium ukr dumb" were not updated.
+
+## Repainted loading/saving panels for images_dyslexic/german (2026-10-15) — NOT installed in game
+- `tools/make_loading_panels.py <orig images_dyslexic/german> <out> [preview dir]` repaints Texture2D `loading-panel-de` (268x39) -> "ЗАВАНТАЖЕННЯ" and `saving-panel-de` (262x39) -> "ЗБЕРЕЖЕННЯ". Output: `work/patched/images_dyslexic/german` (LZ4). Previews: `work/export/loading/dys_*_{old,new}.png`.
+- Texture format: white RGB, alpha carries the image (text alpha ~24-26, right-hand spinner block alpha ~68). Block left edge x=163 (saving) / 169 (loading), read from row y=8. Old text overlapped the block in saving panel; cleaned by copying clean row 30.
+- Font = Segoe UI Regular (system) — test only; replace with an OFL font (e.g. Noto Sans) before release. Original look was a heavier sans; ours is lighter — judge in game.
+- Only the 2 Texture2D changed; Sprites untouched (they only reference the texture rect).
+- TODO: same text bug in mod's `images/german` (both panels say "ЗБЕРЕЖЕННЯ"), plus all other textures in `images_dyslexic/german` are German (only matter if dyslexic option on).
