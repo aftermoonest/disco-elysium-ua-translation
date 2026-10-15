@@ -39,3 +39,10 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Separate bug: textures `loading-panel-de` and `saving-panel-de` (346x39, images/german) BOTH read "ЗБЕРЕЖЕННЯ"; loading one should be "ЗАВАНТАЖЕННЯ". Russian/English counterparts are white-on-transparent.
 - `resources.assets` MonoBehaviours 2996 (term Buttons/LOAD_SCREEN_PANEL_SAVING_TEXT) and 2998 (LOAD_SCREEN_PANEL_IMG -> sprite "loading-panel") are the built-in default lockit/images source.
 - Exports: `work/export/loading/*.png` (+ `_preview.png` on dark bg), `work/export/collage_lockit.tsv`. Tools: export_texture.py, find_terms.py, probe_loading.py, dump_collage_lockit.py.
+
+## Squares under the big "5" (INTELLECT label) — hypothesis + prepared patch (2026-10-15)
+- Fonts are chosen via `FontsLockit<Lang>` (term type 9: font term -> font asset name per language). Mod's `FontsLockitGerman` maps Dobra-Book SDF etc. to the Cyrillic-extended fonts in `fonts/english`. All those have full Ukrainian coverage, EXCEPT `CoreSansES Light SDF` (mapped from "GulimChe SDF"): it lacks Є І Ї є і ї Ґ ґ (still TODO to fix). `OpenDyslexic3-*` have no Cyrillic at all (only matters in dyslexic mode).
+- Labels PSY/MOT/INT in `level2` use TMP base font LiberationSans + I2 Localize secondary term "Dobra-Book SDF". Only the INT Localize component (MonoBehaviour 25140) additionally holds a direct PPtr (fileID 2, pathID 9785 = base `Dobra-Book SDF` in sharedassets1, no Cyrillic) at offset 0x8C; PSY (26594) has it null → renders fine.
+- Prepared: `tools/patch_int_label.py` → `work/patched/level2` (same size, only that PPtr zeroed). NOT yet tested in game; backup of level2 still to be made before install.
+- Other possibly similar cases (empty term, secondary SinaNova-*, PPtr to #399/#400): level2 25266, 27202; sharedassets2 3272, 3310, 3326, 3350. Not investigated.
+- I2 images lockit maps `LOAD_SCREEN_PANEL_IMG` -> sprite `loading-panel-<lang>`.
