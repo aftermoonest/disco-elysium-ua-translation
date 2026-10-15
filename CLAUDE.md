@@ -12,7 +12,7 @@ User communicates in Ukrainian; reply in Ukrainian unless asked otherwise. Code,
 - `Disco Elysium ukr dumb/` — UABE JSON dumps of the lockits (50 MB+ each; never read whole, use grep/streaming):
   - `ua-dialogies-de.json` (dialogues), `ua-general-de*.json` (technical/UI text), `output ... бекап.json` (backups)
 - `Знімок екрана ...png` — screenshots of known bugs.
-- Game install: `D:\Games\SteamLibrary\steamapps\common\Disco Elysium` (Steam). Its `lockits/german` (2.7 MB, compressed) and `images/german` look like ORIGINAL untouched bundles (the mod is not installed there right now) — useful as a reference; the mod bundles are uncompressed (16 MB / 28 MB). No `lockits/english` exists (English is built into resources). Extra folders: `images_dyslexic/`, `shared/content.bundle`, `collage/`.
+- Game install: `D:\Games\SteamLibrary\steamapps\common\Disco Elysium` (Steam). Its `lockits/german` (2.7 MB, compressed) and `images/german` are the MOD itself, installed in compressed form (verified: its GeneralLockit contains Ukrainian). So NO original German exists in the game; use other languages (e.g. lockits/russian, images/russian) as originals/layout references. The release-folder bundles are the uncompressed (16 MB / 28 MB) variants. No `lockits/english` exists (English is built into resources). Extra folders: `images_dyslexic/`, `shared/content.bundle`, `collage/`.
 - Tooling installed 2026-10-15: Git 2.55, Python 3.12, UnityPy 1.25.4 (open a new terminal or refresh PATH if `git`/`python` are not found).
 
 ## Workflow (from the user's guide, Notion "Disco Elysium tips")
@@ -36,5 +36,6 @@ User communicates in Ukrainian; reply in Ukrainian unless asked otherwise. Code,
 - Don't touch the user's game install without explicit confirmation; prefer testing against a copy.
 - Record every finding (asset names, path IDs, keys) in `docs/findings.md` so it survives between sessions.
 - Plan: `PLAN.md`. Tasks: `TASKS.md`.
+
 
 
