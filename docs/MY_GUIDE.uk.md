@@ -19,8 +19,8 @@
 
 ## 2. Що брати, щоб віддати гравцям
 У теці `dist_next\`:
-- `DiscoElysium_UA_installer_v0.1.0_windows.zip` (21 МБ): **Windows**. Усередині `.exe`, README, тека `package`.
-- `DiscoElysium_UA_installer_v0.1.0_python.zip` (11 МБ): **Mac / Linux / Steam Deck**. Усередині `installer.py`, README, `package`.
+- `DiscoElysium_UA_installer_v1.0_windows.zip` (21 МБ): **Windows**. Усередині `.exe`, README, тека `package`.
+- `DiscoElysium_UA_installer_v1.0_python.zip` (11 МБ): **Mac / Linux / Steam Deck**. Усередині `installer.py`, README, `package`.
 
 Це дві «версії для завантаження» на Nexus. Тека `package` має завжди лежати поруч з `.exe` або `installer.py`.
 
@@ -52,7 +52,7 @@ python installer\installer.py --cli install --dry-run --game "ШЛЯХ_ДО_ГР
    ```
 3. **Збірка пакета й архівів** (замініть версію; `.exe` вже зібраний у `build\exe\`):
    ```powershell
-   python -I tools\build_package.py --version 0.1.1 --dist dist_next --exe build\exe\DiscoElysium_UA_installer.exe
+   python -I tools\build_package.py --version 1.1 --dist dist_next --exe build\exe\DiscoElysium_UA_installer.exe
    ```
    Якщо змінювали `installer.py`, спершу перезберіть `.exe`:
    ```powershell

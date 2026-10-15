@@ -81,7 +81,7 @@ check("all files equal the package hashes", all(sha(DATA / f["path"]) == f["new"
 check("backup dir + install.json written", (GAME / "_ua_backup" / "install.json").exists())
 check("originals backed up", all(sha(GAME / "_ua_backup" / p) == h for p, h in start.items()), "")
 rc, out = run("--cli", "info")
-check("info says installed", "installed (version 0.1.0)" in out, out)
+check("info says installed", f"installed (version {MAN['mod_version']})" in out, out)
 
 rc, out = run("--cli", "install", "-y")
 check("re-install (update) works", rc == 0 and all(sha(DATA / f["path"]) == f["new"] for f in FILES), out)

@@ -59,7 +59,7 @@ def opt(name, default=None):
 
 
 def main():
-    version = opt("--version", "0.1.0")
+    version = opt("--version", "1.0")
     dist = ROOT / opt("--dist", "dist")
     exe = opt("--exe")
     skip = {version, opt("--dist"), exe, "--version", "--dist", "--exe"}
