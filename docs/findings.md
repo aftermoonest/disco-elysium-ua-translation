@@ -81,3 +81,10 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Font = Segoe UI Regular (system) — test only; replace with an OFL font (e.g. Noto Sans) before release. Original look was a heavier sans; ours is lighter — judge in game.
 - Only the 2 Texture2D changed; Sprites untouched (they only reference the texture rect).
 - TODO: same text bug in mod's `images/german` (both panels say "ЗБЕРЕЖЕННЯ"), plus all other textures in `images_dyslexic/german` are German (only matter if dyslexic option on).
+
+## FINAL ANSWER: where "WIRD GELADEN" lives (2026-10-15)
+- It is a hard-coded C# string literal compiled into the IL2CPP metadata: `disco_Data/il2cpp_data/Metadata/global-metadata.dat` (version 27), literal-table entry #14127, bytes at file offset 630745. Next to it sit the other languages' constants ("CARGANDO", "CARREGANDO", "CHARGEMENT", ...). Level0 has a TMP text "LOADING" (GO "RotationLoading") that code swaps per language. That is why no asset/bundle/lockit search ever found it; the Splash texture (sharedassets0 `Splash`, 1920x1080) is only the painting.
+- The images_dyslexic loading/saving panel I repainted is the small in-game autosave/load indicator, NOT the startup splash. The user disliked it -> images_dyslexic/german was RESTORED in the game from work/backup (hash == original). `work/patched/images_dyslexic/german` is obsolete (do not ship). Collage/shared patch (Collage/BUTTON/LOADING) is still installed in the game; unrelated to the splash.
+- Patch tool: `tools/patch_metadata_literal.py <src> <out> "WIRD GELADEN" "ЗАВАНТАЖЕННЯ"` appends the new UTF-8 text (24 B > 12 B old) at end of file and repoints the table entry (len, dataIndex). Only 4 bytes inside the original file change. Output: `work/patched/global-metadata.dat` (not installed). Risk: this is a game file (12 MB), breaks on game updates; font of that TMP text may lack Cyrillic (squares) -> test.
+- Other hard-coded German literals may exist in the same metadata (UI strings in code). TODO: scan literals near "WIRD GELADEN" / list all German-looking literals.
+- Player.log: grep only, never Read (very long).
