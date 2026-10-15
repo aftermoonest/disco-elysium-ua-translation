@@ -1,4 +1,4 @@
-# Disco Elysium — Ukrainian translation (Nexus Mods mod)
+﻿# Disco Elysium — Ukrainian translation (Nexus Mods mod)
 
 Ukrainian localization of Disco Elysium: The Final Cut. The mod **replaces the German language** (so Russian isn't needed in Steam). Everything the player sees as "German" is really Ukrainian text/fonts/images.
 
@@ -12,7 +12,8 @@ User communicates in Ukrainian; reply in Ukrainian unless asked otherwise. Code,
 - `Disco Elysium ukr dumb/` — UABE JSON dumps of the lockits (50 MB+ each; never read whole, use grep/streaming):
   - `ua-dialogies-de.json` (dialogues), `ua-general-de*.json` (technical/UI text), `output ... бекап.json` (backups)
 - `Знімок екрана ...png` — screenshots of known bugs.
-- Originals of the game are NOT in this folder. Game install path: TODO (ask user; needed for testing).
+- Game install: `D:\Games\SteamLibrary\steamapps\common\Disco Elysium` (Steam). Its `lockits/german` (2.7 MB, compressed) and `images/german` look like ORIGINAL untouched bundles (the mod is not installed there right now) — useful as a reference; the mod bundles are uncompressed (16 MB / 28 MB). No `lockits/english` exists (English is built into resources). Extra folders: `images_dyslexic/`, `shared/content.bundle`, `collage/`.
+- Tooling installed 2026-10-15: Git 2.55, Python 3.12, UnityPy 1.25.4 (open a new terminal or refresh PATH if `git`/`python` are not found).
 
 ## Workflow (from the user's guide, Notion "Disco Elysium tips")
 1. Bundles live in `<game>\disco_Data\StreamingAssets\AssetBundles\Windows\{lockits,fonts,images,collage}`. Use bundle files, not `.manifest`.
@@ -29,9 +30,11 @@ User communicates in Ukrainian; reply in Ukrainian unless asked otherwise. Code,
 4. Replacing ALL image assets once crashed the game — suspect wrong asset mapping/IDs.
 
 ## Rules for Claude
-- NEVER modify files in the release folder or dumps in place; work on copies in `work/` and keep backups. These are binary bundles and huge JSONs; there is no git yet.
+- NEVER modify files in the release folder or dumps in place; work on copies in `work/` and keep backups. These are binary bundles and huge JSONs; git tracks only the docs/tools (not the big binaries).
 - Never load a whole dump into context; use grep with `head_limit`, or Python scripts that stream/parse.
 - Put scratch scripts in `tools/`, not in the release folder.
 - Don't touch the user's game install without explicit confirmation; prefer testing against a copy.
 - Record every finding (asset names, path IDs, keys) in `docs/findings.md` so it survives between sessions.
 - Plan: `PLAN.md`. Tasks: `TASKS.md`.
+
+
