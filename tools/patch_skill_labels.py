@@ -1,6 +1,6 @@
 """Build a patched COPY of resources.assets where CharsheetSkillLabelsGerman holds Ukrainian names.
 
-Usage: python -I tools/patch_skill_labels.py <game resources.assets> <out resources.assets>
+Usage: python -I tools/patch_skill_labels.py <game resources.assets> <out resources.assets> [<lockits/russian> <mod lockits/german>]
 
 Source text: Ukrainian GeneralLockit (the mod's lockits/german) via Actor term ids, matched through the
 Russian label object (CharsheetSkillLabelsRussian, 3010). Layout floats (font size, rect) are taken from the
@@ -63,8 +63,11 @@ def lockit_terms(bundle, name):
 
 def main():
     src, dst = Path(sys.argv[1]), Path(sys.argv[2])
-    ru_terms = lockit_terms(ROOT / "work/original/AssetBundles/lockits/russian", "GeneralLockitRussian")
-    ua_terms = lockit_terms(ROOT / "Disco Elysium  Ukrainian translation/lockits/german", "GeneralLockitGerman")
+    # optional: <original lockits/russian> <mod lockits/german>; defaults are the Windows work layout
+    ru_bundle = Path(sys.argv[3]) if len(sys.argv) > 3 else ROOT / "work/original/AssetBundles/lockits/russian"
+    ua_bundle = Path(sys.argv[4]) if len(sys.argv) > 4 else ROOT / "Disco Elysium  Ukrainian translation/lockits/german"
+    ru_terms = lockit_terms(ru_bundle, "GeneralLockitRussian")
+    ua_terms = lockit_terms(ua_bundle, "GeneralLockitGerman")
     norm = lambda s: re.sub(r"[\s\-]", "", s).lower()
 
     env = UnityPy.load(str(src))
