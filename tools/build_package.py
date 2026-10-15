@@ -1,4 +1,4 @@
-"""Build the installer package (patches + data files) from the snapshot of the modded game.
+r"""Build the installer package (patches + data files) from the snapshot of the modded game.
 
 Usage: python -I tools/build_package.py [snapshot dir] [--version X.Y.Z] [--dist DIR] [--exe path\to\installer.exe]
 
