@@ -18,7 +18,7 @@
 - [ ] Test collage/shared in game (installed 2026-10-15; it did NOT fix the splash text; Collage UI itself still untested)
 - [ ] REAL source of "WIRD GELADEN": Texture2D `loading-panel-de` (268x39, path_id 5781628726658703548) in `images_dyslexic/german` (original German, mod never touched images_dyslexic). Repaint to "ЗАВАНТАЖЕННЯ"; also saving-panel-de there
 - [x] (obsolete) repainted dyslexic panels - wrong target, restored in game
-- [ ] REAL fix: global-metadata.dat literal "WIRD GELADEN" -> "ЗАВАНТАЖЕННЯ": patched copy work/patched/global-metadata.dat (NOT installed; needs user OK + backup)
+- [x] DONE 2026-10-15: splash "ЗАВАНТАЖЕННЯ" via global-metadata.dat literal (installed, verified) + font size 80 via level0 (installed; backups work/backup/metadata, work/backup/level)
 - [ ] Fix `loading-panel-de` texture: it says "ЗБЕРЕЖЕННЯ" (Saving) — should be "ЗАВАНТАЖЕННЯ"; same text as saving-panel-de
 
 ## Bug 2 — Squares (missing glyphs)
