@@ -17,7 +17,7 @@ The installer:
 | Windows, Steam | tested |
 | Steam Deck / Linux (Steam, Proton) | expected to work (same files as Windows), feedback welcome |
 | Windows, GOG / Xbox app (Game Pass) / Epic | the installer checks the version and tells you; see "Another game version" |
-| macOS | needs testing; the game files differ there |
+| macOS, Steam (Apple Silicon, macOS 26) | files verified in the game; the Mac installer itself is still being tested. Intel Macs and older macOS were not tested |
 | Consoles (Xbox, PlayStation, Switch) | not possible |
 
 ## Installing
@@ -41,9 +41,12 @@ If the window does not open (no `python3-tk`), use text mode: `python3 installer
 
 ### macOS
 1. Open Terminal in the unzipped folder and run `python3 installer.py`
-   (if the window does not open, use `python3 installer.py --cli install`).
-2. If macOS blocks the file when you double-click it: `xattr -d com.apple.quarantine installer.py`.
-3. The Mac build of the game may have different files. If the installer says "Unknown game version", see below.
+   On macOS 26 the Tk window of the system Python aborts ("macOS 26 (2603) or later required"). The installer detects this
+   and switches to text mode by itself: just confirm the installation with `y`.
+   To remove the translation: `python3 installer.py --cli remove`.
+2. If macOS blocks the file: `xattr -d com.apple.quarantine installer.py`.
+3. The Steam version is supported (`~/Library/Application Support/Steam/steamapps/common/Disco Elysium`). The game must not be running.
+   If the installer says "Unknown game version", see below.
 
 ## After installing
 Start the game and choose **Deutsch** in the language settings. All text will be in Ukrainian.

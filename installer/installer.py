@@ -71,6 +71,9 @@ T = {
         "cancelled": "Скасовано.",
         "error": "Помилка: {0}",
         "wait": "Зачекайте…",
+        "no_window": "Графічне вікно на цьому Mac недоступне: Tk у цьому Python аварійно завершується на macOS 26. "
+                     "Працюємо в текстовому режимі, далі буде запит на встановлення. "
+                     "Щоб видалити переклад: python3 installer.py --cli remove",
     },
     "en": {
         "title": "Disco Elysium — Ukrainian translation",
@@ -110,6 +113,9 @@ T = {
         "cancelled": "Cancelled.",
         "error": "Error: {0}",
         "wait": "Please wait…",
+        "no_window": "The window is not available on this Mac: Tk in this Python aborts on macOS 26. "
+                     "Using text mode; you will be asked to confirm the installation. "
+                     "To remove the translation: python3 installer.py --cli remove",
     },
 }
 
@@ -321,6 +327,9 @@ def game_running():
             return "disco.exe" in out.lower()
         if system == "Linux":
             out = subprocess.run(["pgrep", "-fi", "disco.exe"], capture_output=True, text=True, timeout=15).stdout.split()
+            return any(int(p) != os.getpid() for p in out)
+        if system == "Darwin":
+            out = subprocess.run(["pgrep", "-f", "disco.app/Contents/MacOS"], capture_output=True, text=True, timeout=15).stdout.split()
             return any(int(p) != os.getpid() for p in out)
     except Exception:
         pass
@@ -697,6 +706,18 @@ def run_gui(args, lang):
     return 0
 
 
+def tk_would_abort():
+    """True on macOS 26 under a Python built with an old SDK. There macOS reports its version as 16 and Tk calls abort()
+    ("macOS 26 (2603) or later required, have instead 16 (1603)"), which kills the process and cannot be caught.
+    A real macOS 16 does not exist, so major == 16 identifies that case. DISCO_UA_FORCE_GUI=1 skips the guard."""
+    if platform.system() != "Darwin" or os.environ.get("DISCO_UA_FORCE_GUI"):
+        return False
+    try:
+        return int(platform.mac_ver()[0].split(".")[0]) == 16
+    except (ValueError, IndexError):
+        return False
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Disco Elysium Ukrainian translation installer")
     ap.add_argument("--cli", action="store_true", help="text mode instead of the window")
@@ -718,6 +739,10 @@ def main(argv=None):
     if args.command or args.cli:
         if not args.command:
             ap.error("--cli needs a command: install | remove | info | collect-info")
+        return run_cli(args, tr)
+    if tk_would_abort():
+        print(tr("no_window"))
+        args.command = "install"
         return run_cli(args, tr)
     try:
         return run_gui(args, lang)

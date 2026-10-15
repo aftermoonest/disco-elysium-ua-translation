@@ -41,8 +41,36 @@ FILES = [
 ]
 
 
+B_MAC = "StreamingAssets/AssetBundles/OSX/"
+MAC_DIR = ROOT / "work" / "mac_build"  # made on a Mac by tools/build_mac_files.py (+ --install, which keeps work/mac_build/originals)
+MAC_PATCHES = ["resources.assets", "level0", "level2", "il2cpp_data/Metadata/global-metadata.dat", B_MAC + "collage/shared"]
+MAC_BUNDLES = ["lockits/german", "images/german", "fonts/english"]  # byte-identical to the Windows bundles
+
+
 def sha(b):
     return hashlib.sha256(b).hexdigest()
+
+
+def mac_variant(out, win_files, inst):
+    """Variant for the macOS Steam build: bsdiff patches from the Mac originals; the three bundles reuse the Windows data files."""
+    report = json.loads((MAC_DIR / "report.json").read_text(encoding="utf-8"))
+    by_path = {f["path"]: f for f in win_files}
+    files = []
+    for rel in MAC_PATCHES:
+        old, new = (MAC_DIR / "originals" / rel).read_bytes(), (MAC_DIR / "files" / rel).read_bytes()
+        assert sha(old) == report[rel]["orig"] and sha(new) == report[rel]["new"], f"mac_build/{rel} does not match report.json"
+        patch = bsdiff4.diff(old, new)
+        pname = "patches/mac__" + rel.replace("/", "__") + ".bsdiff"
+        (out / "package" / pname).write_bytes(patch)
+        assert inst.bspatch(old, patch) == new, f"pure-Python bspatch mismatch for mac {rel}"
+        files.append({"path": rel, "kind": "patch", "new": sha(new), "size": len(new), "orig": sha(old), "orig_size": len(old), "patch": pname})
+        print(f"  mac patch {rel:56} {len(old):>11,} -> {len(new):>11,}  patch {len(patch):>8,} B  (verified)")
+    for b in MAC_BUNDLES:
+        w = by_path[B + b]
+        assert sha((MAC_DIR / "files" / (B_MAC + b)).read_bytes()) == w["new"], f"mac bundle {b} differs from the Windows one"
+        files.append({"path": B_MAC + b, "kind": "replace", "new": w["new"], "size": w["size"], "data": w["data"]})
+        print(f"  mac replace {B_MAC + b:54} shares {w['data']}")
+    return {"id": "macos-steam-final-cut", "data_dirs": ["disco.app/Contents/Resources/Data"], "files": files}
 
 
 def load_installer():
@@ -97,8 +125,12 @@ def main():
             print(f"  replace {rel:60} {len(new):>11,} B")
         files.append(entry)
 
-    manifest = {"mod_version": version, "game": "Disco Elysium",
-                "variants": [{"id": "windows-steam-final-cut", "data_dirs": ["disco_Data"], "files": files}]}
+    variants = [{"id": "windows-steam-final-cut", "data_dirs": ["disco_Data"], "files": files}]
+    if (MAC_DIR / "report.json").exists():
+        variants.append(mac_variant(out, files, inst))
+    else:
+        print("!! work/mac_build/report.json not found: building WITHOUT the macOS variant")
+    manifest = {"mod_version": version, "game": "Disco Elysium", "variants": variants}
     (out / "package" / "manifest.json").write_text(json.dumps(manifest, indent=1, ensure_ascii=False), encoding="utf-8")
 
     def make_zip(path, extra, skip_names=()):
