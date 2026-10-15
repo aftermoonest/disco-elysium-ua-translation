@@ -2,8 +2,7 @@ work/
 __pycache__/
 *.pyc
 .venv/
-dist/
-dist_next/
+dist*/
 build/
 uabea-windows/
 # full Ukrainian game text: keep local, do not publish
@@ -12,3 +11,4 @@ translation/
 /Disco Elysium  Ukrainian translation/
 /Disco Elysium ukr dumb/
 /*.png
+*- Copy/
