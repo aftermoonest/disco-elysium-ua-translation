@@ -1,15 +1,20 @@
 ﻿# Tasks
 
 ## Setup
-- [ ] Tell Claude: game install path, UABEA path, Unity version, whether Python is installed
-- [ ] `git init`, `.gitignore`, backup of current release folder + dumps
-- [ ] Create `work/`, `tools/`, `docs/findings.md`, `docs/glossary.md`
-- [ ] Set up Python + UnityPy for scripted bundle inspection (read-only first)
+- [x] Game install path, Unity version (2020.3.12f1), Python 3.12
+- [ ] UABEA path (user installed it; path not yet recorded)
+- [x] `git init`, `.gitignore` (git tracks docs/tools only)
+- [ ] Backup of release folder + dumps outside the repo
+- [x] Create `work/`, `tools/`, `docs/findings.md`, `docs/glossary.md`
+- [x] Python + UnityPy for scripted bundle inspection
 
 ## Bug 1 — German skill names + loading screen
 - [x] Searched: WIRD GELADEN is a texture, not text
-- [ ] Identify where the skill names/descriptions on the character sheet come from
-- [ ] Translate and re-import; verify in game
+- [x] Skill names found: resources.assets CharsheetSkillLabelsGerman (id 3005)
+- [x] Patched via tools/patch_skill_labels.py, verified in game 2026-10-15 (backup in work/backup)
+- [ ] Tune small font sizes (Тремтіння, Навіювання, Самовладання, Електрохімія, Координація)
+- [ ] Decide how to ship resources.assets with the mod (Nexus instructions)
+- [ ] Loading screen: repaint texture loading-panel-de in images/german
 
 ## Bug 2 — Squares (missing glyphs)
 - [ ] List all font assets in `fonts/english` and which are used where
