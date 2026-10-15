@@ -55,3 +55,10 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - Review points in the translation: "Fuck the World" → "На хер цей світ" (kept vulgar like the source), "Lily Livered"/"Pale-Aged"/"Off Breeze"/"Ace's High" are guesses (names of photo filters/fragments).
 
 - 2026-10-15: patched level2 (INT label PPtr zeroed) CONFIRMED in game: 'ІНТЕЛЕКТ' renders. Mod must ship patched level2 + resources.assets (game files, not bundles). Backups in work/backup.
+
+## CoreSansES Light SDF usage (2026-10-15)
+- Font term "GulimChe SDF" -> CoreSansES Light SDF. Used ONLY by HUD labels in level2/sharedassets1: HUD_DAY, HUD_JOURNAL/CHARSHEET/INVENTORY/CABINET_ABBREVIATION, Buttons/PAWNSHOP_BUTTON_CLOSE_TEXT.
+- Only missing glyph needed by current text: І (in "ІНВ", HUD_INVENTORY_ABBREVIATION). Є/Ґ are not used by any of these terms, so not added.
+- Fix: alias U+0406/0456/0407/0457 to Latin I/i/Ï/ï glyphs in the character table (visually identical; no atlas change). `tools/patch_coresans.py` -> `work/patched/fonts/english` (+64 bytes). NOT yet tested in game.
+- Pawnshop close text 'ЗАКРИТИ ▼?' (Russian original also has '▼?') — ▼ not in this font; check in game how it renders.
+- HUD_CHARSHEET_ABBREVIATION "ПЕРСОНАЖ" wraps ("ПЕРСО/НАЖ") in the bottom bar (overflow, Bug 3).
