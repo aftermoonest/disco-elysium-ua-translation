@@ -20,7 +20,9 @@
 
 ## Bug 2 — Squares (missing glyphs)
 - [ ] List all font assets in `fonts/english` and which are used where
-- [ ] Find the font of "Інтелект" label (and others) lacking Cyrillic
+- [x] INTELLECT label squares fixed: level2 Localize PPtr override zeroed (tools/patch_int_label.py), verified in game
+- [ ] CoreSansES Light SDF lacks Є І Ї Ґ (mapped from 'GulimChe SDF') — find where it's used
+- [ ] Check similar PPtr overrides: level2 25266/27202, sharedassets2 3272/3310/3326/3350
 - [ ] Rebuild SDF atlas with Cyrillic; replace; verify
 
 ## Bug 3 — Text overflow
@@ -37,4 +39,5 @@
 - [ ] Translation quality pass + glossary
 - [ ] Collage mode labels (`collage/` bundle) check
 - [ ] Release build script + Nexus changelog
+
 

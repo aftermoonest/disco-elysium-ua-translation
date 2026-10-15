@@ -53,3 +53,5 @@ Deployment note: mod would have to ship a modified `resources.assets` (3.4 MB ga
 - game's `collage/shared` == `work/original/AssetBundles/collage/shared` (sha256 equal) → it is the untouched original; restore = just re-copy it.
 - Not yet checked in game: (1) whether Collage UI fonts have Cyrillic glyphs (risk: squares!), (2) text fit in tabs/tooltips (abbreviated "Вел./Жирн./Серед./Мал./Тонк.", "Віз. аналіз № {0}"), (3) `<i>` tags in HIDDEN texts render.
 - Review points in the translation: "Fuck the World" → "На хер цей світ" (kept vulgar like the source), "Lily Livered"/"Pale-Aged"/"Off Breeze"/"Ace's High" are guesses (names of photo filters/fragments).
+
+- 2026-10-15: patched level2 (INT label PPtr zeroed) CONFIRMED in game: 'ІНТЕЛЕКТ' renders. Mod must ship patched level2 + resources.assets (game files, not bundles). Backups in work/backup.
